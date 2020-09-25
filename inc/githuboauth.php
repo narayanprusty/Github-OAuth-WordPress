@@ -11,10 +11,15 @@ function apiRequest($url, $post=FALSE, $headers=array()) {
  
   $headers[] = 'Accept: application/json';
  
-  if(session('access_token'))
-    $headers[] = 'Authorization: Bearer ' . session('access_token');
+  if(session('access_token')){
+	# refere to: https://docs.github.com/en/developers/apps/authorizing-oauth-apps#3-use-the-access-token-to-access-the-api
+	# The prefix has been changed to "token". The original is "Bearer"
+    	$headers[] = 'Authorization: token ' . session('access_token');
+  }
  
   curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+  # This line is added to solve Error 60 SSL certificate problem: unable to get local issuer certificate'
+  curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
 
   curl_setopt($ch, CURLOPT_USERAGENT, get_option("github_app_name")); 
  
@@ -32,10 +37,15 @@ function GithubApiRequest($url, $post=FALSE, $headers=array()) {
  
   $headers[] = 'Accept: application/json';
  
-  if(session('access_token'))
-    $headers[] = 'Authorization: Bearer ' . get_user_meta(get_current_user_id(), "github_access_token", TRUE);
+  if(session('access_token')){
+	# refere to: https://docs.github.com/en/developers/apps/authorizing-oauth-apps#3-use-the-access-token-to-access-the-api
+	# The prefix has been changed to "token". The original is "Bearer"
+    	$headers[] = 'Authorization: Bearer ' . get_user_meta(get_current_user_id(), "github_access_token", TRUE);
+  }
  
   curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+  # This line is added to solve Error 60 SSL certificate problem: unable to get local issuer certificate'
+  curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
 
   curl_setopt($ch, CURLOPT_USERAGENT, get_option("github_app_name")); 
  
